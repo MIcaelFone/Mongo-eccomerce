@@ -1,4 +1,3 @@
-// Modifica a coleção 'products' para incluir um campo de promoção opcional
 use('ecommerce');
 db.products.updateMany({}, {
     $set: {
@@ -9,8 +8,6 @@ db.products.updateMany({}, {
         }
     }
 });
-
-// Função para definir uma promoção para um produto específico
 function definirPromocao(produtoId, percentualDesconto, dataInicio, dataFim) {
     db.products.updateOne(
         { _id: produtoId },
@@ -23,8 +20,6 @@ function definirPromocao(produtoId, percentualDesconto, dataInicio, dataFim) {
         }
     );
 }
-
-// Exemplo de uso da função para definir uma promoção
 const produtoId = db.products.findOne({ nome: "Camiseta" })._id;
 definirPromocao(produtoId, 20, "2024-11-01", "2024-11-15");
 
@@ -49,6 +44,4 @@ function calcularPrecoFinal(produtoId) {
 // Exemplo de cálculo do preço com promoção ativa
 const precoFinal = calcularPrecoFinal(produtoId);
 print("Preço final com promoção:", precoFinal);
-
-
  
