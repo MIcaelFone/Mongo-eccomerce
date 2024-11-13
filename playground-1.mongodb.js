@@ -176,7 +176,6 @@ db.getCollection('products').insertMany([
 ]);
 console.log("Produtos inseridos com sucesso");
  
-
 db.getCollection('transacoes').insertOne({
     idproduto: ObjectId("67328153a45cda7afe4cd0fe"),
     idusuario: ObjectId("67328153a45cda7afe4cd0f5"),
@@ -199,3 +198,6 @@ db.getCollection("avaliacoes").insertMany([
         nota: Int32(20)
     }
 ]);
+
+console.log("Avaliação inserida com sucesso");
+ 

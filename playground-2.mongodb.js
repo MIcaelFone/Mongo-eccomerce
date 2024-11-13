@@ -6,31 +6,6 @@ db.getCollection('products').find(
 );
 console.log("Produtos da categoria 'Eletrônicos' exibidos com sucesso");
 
-
-db.getCollection('transacoes').insertOne({
-    idproduto: ObjectId("67328153a45cda7afe4cd0fe"),
-    idusuario: ObjectId("67328153a45cda7afe4cd0f5"),
-    quantidade: 2,
-    valor_total: 200
-});
-
-console.log("Transação inserida com sucesso");
-db.getCollection("avaliacoes").insertMany([
-    {
-        idproduto: ObjectId("67328153a45cda7afe4cd0ff"),
-        idtransacao: ObjectId('673105ed366b0e83553d4822'),
-        idusuario: ObjectId("67328153a45cda7afe4cd0f4"),
-        nota: Int32(5)
-    },
-    {
-        idproduto: ObjectId("67328153a45cda7afe4cd0fe"),
-        idtransacao: ObjectId('673105ed366b0e83553d4822'),
-        idusuario: ObjectId("67328153a45cda7afe4cd0f5"),
-        nota: Int32(20)
-    }
-]);
-
-console.log("Avaliação inserida com sucesso");
 db.getCollection('avaliacoes').find(
     { idproduto: ObjectId("6731c95c31decff1925311ce") },
     { "nota": 1,  "idproduto": 1 }
