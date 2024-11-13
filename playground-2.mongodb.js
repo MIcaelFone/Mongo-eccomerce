@@ -162,7 +162,7 @@ db.transacoes.aggregate([
         $group: {
             _id: "$categorias.nome",  // Agrupa por nome da categoria
             totalVendas: { 
-                $sum: "$valor_total"  // Soma o valor total das transações
+                $sum: "$valor_total"  // Soma o valor total das transações testes
             }
         }
     },
