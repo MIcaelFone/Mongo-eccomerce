@@ -104,7 +104,7 @@ db.createCollection('categories', {
         }
     }
 })
-db.getCollection('transacoes').aggregate([
+db.transacoes.aggregate([
     {
         $lookup: {
             from: "products",
@@ -135,16 +135,16 @@ db.getCollection('transacoes').aggregate([
     },
     {
         $group: {
-            _id: "$categorias.nome",
-            soma_total: { 
-                $sum: { $multiply: ["$quantidade", "$produto.preco"] }
+            _id: "$categorias.nome",  // Agrupa por nome da categoria
+            totalVendas: { 
+                $sum: "$valor_total"  // Soma o valor total das transações testes
             }
         }
     },
     {
         $project: {
             _id: 1,
-            soma_total: 1
+            totalVendas: 1
         }
     }
 ]);
