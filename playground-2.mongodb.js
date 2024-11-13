@@ -6,6 +6,31 @@ db.getCollection('products').find(
 );
 console.log("Produtos da categoria 'Eletrônicos' exibidos com sucesso");
 
+
+db.getCollection('transacoes').insertOne({
+    idproduto: ObjectId("67328153a45cda7afe4cd0fe"),
+    idusuario: ObjectId("67328153a45cda7afe4cd0f5"),
+    quantidade: 2,
+    valor_total: 200
+});
+
+console.log("Transação inserida com sucesso");
+db.getCollection("avaliacoes").insertMany([
+    {
+        idproduto: ObjectId("67328153a45cda7afe4cd0ff"),
+        idtransacao: ObjectId('673105ed366b0e83553d4822'),
+        idusuario: ObjectId("67328153a45cda7afe4cd0f4"),
+        nota: Int32(5)
+    },
+    {
+        idproduto: ObjectId("67328153a45cda7afe4cd0fe"),
+        idtransacao: ObjectId('673105ed366b0e83553d4822'),
+        idusuario: ObjectId("67328153a45cda7afe4cd0f5"),
+        nota: Int32(20)
+    }
+]);
+
+console.log("Avaliação inserida com sucesso");
 db.getCollection('avaliacoes').find(
     { idproduto: ObjectId("6731c95c31decff1925311ce") },
     { "nota": 1,  "idproduto": 1 }
@@ -148,3 +173,71 @@ db.transacoes.aggregate([
         }
     }
 ]);
+
+/*
+    Otimização de Consultas no MongoDB
+
+    Para melhorar a performance das consultas no banco de dados 'ecommerce', 
+    consideramos a criação de índices nos campos que são frequentemente utilizados 
+    em operações de busca, junção e filtragem. Abaixo estão as sugestões de índices:
+
+    1. Índices em Campos Usados em Consultas
+
+       Coleção 'products':
+       - Índice em 'idcategoria': 
+         Esse índice ajudará a acelerar as consultas que filtram produtos por categoria.
+         Exemplo:
+         db.products.createIndex({ idcategoria: 1 });
+
+       - Índice em '_id': 
+         O campo '_id' já é indexado por padrão, mas considere adicionar índices para outros campos 
+         se houver muitas operações de busca.
+
+       Coleção 'transacoes':
+       - Índice em 'idproduto': 
+         Esse índice melhorará a performance das operações de lookup ao buscar produtos.
+         Exemplo:
+         db.transacoes.createIndex({ idproduto: 1 });
+
+       - Índice em 'idusuario': 
+         Se houver buscas frequentes por transações de um usuário específico, este índice pode ser útil.
+         Exemplo:
+         db.transacoes.createIndex({ idusuario: 1 });
+
+       Coleção 'avaliacoes':
+       - Índice em 'idproduto': 
+         Este índice acelerará as junções com a coleção 'products' usando 'idproduto'.
+         Exemplo:
+         db.avaliacoes.createIndex({ idproduto: 1 });
+
+       - Índice em 'idtransacao': 
+         Se houver buscas frequentes por avaliações associadas a uma transação, este índice pode ser útil.
+         Exemplo:
+         db.avaliacoes.createIndex({ idtransacao: 1 });
+
+       Coleção 'categories':
+       - Índice em 'nome': 
+         Se houver buscas frequentes por categorias pelo nome, considere criar um índice nesse campo.
+         Exemplo:
+         db.categories.createIndex({ nome: 1 });
+
+    2. Índices Compostos:
+       Se houver filtros frequentes em múltiplos campos, considere criar índices compostos. Por exemplo:
+       - Índice em 'transacoes' para 'idusuario' e 'idproduto':
+         db.transacoes.createIndex({ idusuario: 1, idproduto: 1 });
+
+    3. Análise de Consultas:
+       Utilize o comando 'explain()' nas consultas para analisar como o MongoDB está executando-as
+       e se está utilizando os índices corretamente. Isso ajuda a identificar consultas que podem ser otimizadas.
+       Exemplo:
+       db.transacoes.aggregate([...]).explain("executionStats");
+
+    4. Considerações Finais:
+       - Custo de Manutenção de Índices: 
+         Lembre-se de que índices aumentam o custo de gravação e atualização, pois o índice precisa ser mantido. 
+         Portanto, é importante encontrar um equilíbrio entre a velocidade de leitura e o custo de escrita.
+
+       - Monitoramento de Performance: 
+         Monitore regularmente o desempenho das suas consultas e ajuste os índices conforme necessário. 
+         O padrão de acesso aos dados pode mudar com o tempo, e os índices devem ser ajustados para refletir isso.
+*/
