@@ -1,21 +1,19 @@
 //Use o comando abaixo para executar o arquivo
-db.users.updateMany(
-    {},
-    { $set: { location: { type: "Point", coordinates: [longitude, latitude] } } }
-);
+function coordinates(longitude, latitude) {
+    db.users.updateMany(
+        {},
+        { $set: { location: { type: "Point", coordinates: [longitude, latitude] } } }
+    );
+}
+coordinates(-46.633309, -23.55052);
+console.log("Coordenadas de usuários inseridas com sucesso");
 //Criar índices 2dsphere
 db.users.createIndex({ location: "2dsphere" });
 db.products.createIndex({ location: "2dsphere" });
+console.log("Índices 2dsphere criados com sucesso");
+db.users.getIndexes();
+db.products.getIndexes();
 //Consulta de distancia    
-db.products.find({
-    location: {
-      $near: {
-        $geometry: { type: "Point", coordinates: [userLongitude, userLatitude] },
-        $maxDistance: raioEmMetros
-      }
-    }
-});
-//Agregação para Média de Distância entre Compradores e Vendedores:
 db.transactions.aggregate([
     {
       $lookup: {
@@ -45,6 +43,7 @@ db.transactions.aggregate([
     },
     { $group: { _id: null, distanciaMedia: { $avg: "$distancia" } } }
 ]);
+console.log("Média de distância calculada com sucesso");
 // Buscar Produtos por Proximidade Geográfica:
 db.products.find({
     location: {
@@ -54,6 +53,7 @@ db.products.find({
       }
     }
 });
+console.log("Produtos encontrados com sucesso");
   
  
  
