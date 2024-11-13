@@ -1,141 +1,153 @@
 use('ecommerce');
-db.createCollection('users', {
-    validator: {
-        $jsonSchema: {
-            bsonType: "object",
-            required: ["nome", "email", "endereco"],
-            properties: {
-                nome: {
-                    bsonType: "string",
-                    description: "Nome must be a string and is required"
-                },
-                email: {
-                    bsonType: "string",
-                    description: "Email must be a string and is required"
-                },
-                endereco: {
-                    bsonType: "string",
-                    description: "Endereco must be a string and is required"
+function criandoUsuarios(){ // Função para criar a coleção de usuários
+    db.createCollection('users', {
+        validator: {
+            $jsonSchema: {
+                bsonType: "object",
+                required: ["nome", "email", "endereco"],
+                properties: {
+                    nome: {
+                        bsonType: "string",
+                        description: "Nome must be a string and is required"
+                    },
+                    email: {
+                        bsonType: "string",
+                        description: "Email must be a string and is required"
+                    },
+                    endereco: {
+                        bsonType: "string",
+                        description: "Endereco must be a string and is required"
+                    }
                 }
             }
-        }
-    }
-});
+         }
+    });
+}
 
-db.createCollection('products', {
-    validator: {
-        $jsonSchema: {
-            bsonType: "object",
-            required: ["nome", "preco", "descricao", "quantidade_disponivel", "idcategoria"],
-            properties: {
-                nome: {
-                    bsonType: "string",
-                    description: "Nome must be a string and is required"
-                },
-                preco: {
-                    bsonType: "double",
-                    description: "Preco must be a double and is required"
-                },
-                descricao: {
-                    bsonType: "string",
-                    description: "Descricao must be a string and is required"
-                },
-                quantidade_disponivel: {
-                    bsonType: "int",
-                    description: "Quantidade disponivel must be an int and is required"
-                },
-                idcategoria: {
-                    bsonType: "objectId",
-                    description: "Idcategoria must be an objectId and is required"
+function criandoProdutos(){ // Função para criar a coleção de produtos
+    db.createCollection('products', {
+        validator: {
+            $jsonSchema: {
+                bsonType: "object",
+                required: ["nome", "preco", "descricao", "quantidade_disponivel", "idcategoria"],
+                properties: {
+                    nome: {
+                        bsonType: "string",
+                        description: "Nome must be a string and is required"
+                    },
+                    preco: {
+                        bsonType: "double",
+                        description: "Preco must be a double and is required"
+                    },
+                    descricao: {
+                        bsonType: "string",
+                        description: "Descricao must be a string and is required"
+                    },
+                    quantidade_disponivel: {
+                        bsonType: "int",
+                        description: "Quantidade disponivel must be an int and is required"
+                    },
+                    idcategoria: {
+                        bsonType: "objectId",
+                        description: "Idcategoria must be an objectId and is required"
+                    }
                 }
             }
         }
-    }
-});
+    });
+}
+function criarCategoria(){ // Função para criar a coleção de categorias
+    db.createCollection('categories', 
+    {
+        validator: {
+            $jsonSchema: {
+                bsonType: "object",
+                required: ["nome", "subcategories"],
+                properties: {
+                    nome: {
+                        bsonType: "string",
+                        description: "Nome must be a string and is required"
+                    },
+                    subcategories: {
+                        bsonType: "array",
+                        description: "Subcategories must be an array"
+                    }
+                }
+            }
+        }
+    });
+}	
+function transacoes(){ // Função para criar a coleção de transações
+    db.createCollection('transacoes', {
+        validator: {
+            $jsonSchema: {
+                bsonType: "object",
+                required: ["idproduto", "idusuario", "quantidade", "valor_total"],
+                properties: {
+                    idproduto: {
+                        bsonType: "objectId",
+                        description: "Idproduto must be an objectId and is required"
+                    },
+                    idusuario: {
+                        bsonType: "objectId",
+                        description: "Idusuario must be an objectId and is required"
+                    },
+                    quantidade: {
+                        bsonType: "int",
+                        description: "Quantidade must be an int and is required"
+                    }
+                }
+            }
+        }
+    });
+}
+function avaliacoes(){
+    db.createCollection('avaliacoes', {
+        validator: {
+            $jsonSchema: {
+                bsonType: "object",
+                required: ["idproduto", "idusuario", "nota"],
+                properties: {
+                    idproduto: {
+                        bsonType: "objectId",
+                        description: "Idproduto must be an objectId and is required"
+                    },
+                    
+                    idtransacao: {
+                        bsonType: "objectId",
+                        description: "Idusuario must be an objectId and is required"
+                    },
+                    nota: {
+                        bsonType: "int",
+                        description: "Nota must be an int and is required"
+                    }
+                }
+            }
+        }
+    });
+}
 
-db.createCollection('categories', {
-    validator: {
-        $jsonSchema: {
-            bsonType: "object",
-            required: ["nome", "subcategories"],
-            properties: {
-                nome: {
-                    bsonType: "string",
-                    description: "Nome must be a string and is required"
-                },
-                subcategories: {
-                    bsonType: "array",
-                    description: "Subcategories must be an array"
-                }
-            }
-        }
-    }
-});
-
-db.createCollection('transacoes', {
-    validator: {
-        $jsonSchema: {
-            bsonType: "object",
-            required: ["idproduto", "idusuario", "quantidade", "valor_total"],
-            properties: {
-                idproduto: {
-                    bsonType: "objectId",
-                    description: "Idproduto must be an objectId and is required"
-                },
-                idusuario: {
-                    bsonType: "objectId",
-                    description: "Idusuario must be an objectId and is required"
-                },
-                quantidade: {
-                    bsonType: "int",
-                    description: "Quantidade must be an int and is required"
-                }
-            }
-        }
-    }
-});
-
-db.createCollection('avaliacoes', {
-    validator: {
-        $jsonSchema: {
-            bsonType: "object",
-            required: ["idproduto", "idusuario", "nota"],
-            properties: {
-                idproduto: {
-                    bsonType: "objectId",
-                    description: "Idproduto must be an objectId and is required"
-                },
-                
-                idtransacao: {
-                    bsonType: "objectId",
-                    description: "Idusuario must be an objectId and is required"
-                },
-                nota: {
-                    bsonType: "int",
-                    description: "Nota must be an int and is required"
-                }
-            }
-        }
-    }
-});
 
 db.getCollection('users').insertMany([
-    { nome: "Alice", email: "alice@example.com", endereco: "Rua A, 123" },
-    { nome: "Bob", email: "bob@example.com", endereco: "Rua B, 456" },
-    { nome: "Carlos", email: "carlos@example.com", endereco: "Rua C, 789" },
-    { nome: "Daniela", email: "daniela@example.com", endereco: "Rua D, 101" },
-    { nome: "Evelyn", email: "evelyn@example.com", endereco: "Rua E, 202" }
+        { nome: "Alice", email: "alice@example.com", endereco: "Rua A, 123" },
+        { nome: "Bob", email: "bob@example.com", endereco: "Rua B, 456" },
+        { nome: "Carlos", email: "carlos@example.com", endereco: "Rua C, 789" },
+        { nome: "Daniela", email: "daniela@example.com", endereco: "Rua D, 101" },
+        { nome: "Evelyn", email: "evelyn@example.com", endereco: "Rua E, 202" }
 ]);
+
 console.log("Usuários inseridos com sucesso");
 
-db.getCollection('categories').insertMany([
-    { nome: "Roupas", subcategories: ["Camisetas", "Calças", "Tênis"] },
-    { nome: "Eletrônicos", subcategories: ["Celulares", "Notebooks"] },
-    { nome: "Livros", subcategories: ["Ficção", "Não-ficção"] },
-    { nome: "Alimentos", subcategories: ["Perecíveis", "Não-perecíveis"] },
-    { nome: "Brinquedos", subcategories: ["Bonecas", "Carrinhos"] }
-]);
-console.log("Categorias inseridas com sucesso");
+    db.getCollection('categories').insertMany([
+        { nome: "Roupas", subcategories: ["Camisetas", "Calças", "Tênis"] },
+        { nome: "Eletrônicos", subcategories: ["Celulares", "Notebooks"] },
+        { nome: "Livros", subcategories: ["Ficção", "Não-ficção"] },
+        { nome: "Alimentos", subcategories: ["Perecíveis", "Não-perecíveis"] },
+        { nome: "Brinquedos", subcategories: ["Bonecas", "Carrinhos"] }
+    ]);
+    console.log("Categorias inseridas com sucesso");
+
+
 
 db.getCollection('products').insertMany([
     { 

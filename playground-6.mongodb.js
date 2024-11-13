@@ -1,11 +1,12 @@
 //Use o comando abaixo para executar o arquivo
-function coordinates(longitude, latitude) {
-    db.users.updateMany(
-        {},
+function coordinatesUsuario(longitude, latitude,idusuario) {
+    db.users.updateOne(
+        {_id:ObjectId(idusuario)},
         { $set: { location: { type: "Point", coordinates: [longitude, latitude] } } }
     );
 }
-coordinates(-46.633309, -23.55052);
+coordinatesUsuario(-46.633309, -23.55052,"6732b521ed38e04887379d31");
+
 console.log("Coordenadas de usuários inseridas com sucesso");
 //Criar índices 2dsphere
 db.users.createIndex({ location: "2dsphere" });
@@ -55,5 +56,5 @@ db.products.find({
 });
 console.log("Produtos encontrados com sucesso");
   
- 
+
  
