@@ -1,4 +1,4 @@
-use("eccormerce");
+use("ecommerce");
 db.createCollection("avaliacoes", {
     validator: {
       $jsonSchema: {

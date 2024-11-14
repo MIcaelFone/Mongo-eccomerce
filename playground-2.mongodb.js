@@ -31,14 +31,17 @@ db.getCollection("avaliacoes").insertMany([ // Insere avaliações de teste
 ]);
 
 console.log("Avaliação inserida com sucesso");
-function procurarAvaliacoes(idProduto) { // Função para buscar avaliações de um produto
-    db.getCollection('avaliacoes').find
-    ( // Busca todas as avaliações
-        { idproduto: ObjectId(idProduto) },
-        { "nota": 1,  "idproduto": 1 }
-    )
+// Questao 3
+function procurarAvaliacoes(idProduto) { // Função para procurar avaliações de um produto
+    return db.getCollection('avaliacoes').find(
+        { idproduto: ObjectId(idProduto) }
+    ).toArray(); // Retorna um array de documentos
 }
-procurarAvaliacoes("6731c95c31decff1925311ce");
+procurarAvaliacoes("67328153a45cda7afe4cd0ff");
+function atualizaProduto(idproduto){
+    
+}
+
 db.getCollection('products').find().forEach(function(product) {
     var product_id = product._id;
     var quantidade_original=product.quantidade_disponivel;
@@ -51,40 +54,9 @@ db.getCollection('products').find().forEach(function(product) {
 });    
 
 
-db.getCollection('products').aggregate([ // Calcula a quantidade disponível de cada produto
-    {
-        $lookup: {
-            from: "avaliacoes",
-            localField: "_id",
-            foreignField: "idproduto",
-            as: "avalia"
-        }
-    },
-    {
-        $unwind: { path: "$avalia", preserveNullAndEmptyArrays: true }
-    },
-    {
-        $group: {
-            _id: "$_id",  // Agrupa por ID de cada produto
-            nome: { $first: "$nome" },
-            soma_notas: { $sum: "$avalia.nota" },  // Soma das notas para cada produto
-            quantidade_avaliacoes: { $sum: { $cond: [{ $ifNull: ["$avalia.nota", false] }, 1, 0] } }  // Quantidade de avaliações por produto
-        }
-    },
-    {
-        $project: {
-            nome: 1,
-            nota: 1,
-            nota_media: {
-                $cond: {
-                    if: { $eq : ["$quantidade_avaliacoes", 0] },
-                    then: null,
-                    else: { $divide: ["$soma_notas", "$quantidade_avaliacoes"] }
-                }
-            }
-        }
-    }
-]);
+// Calcula a quantidade disponível de cada produto
+
+
 db.getCollection('transacoes').aggregate([ // Calcula o total de vendas por categoria
     {
         $lookup: {

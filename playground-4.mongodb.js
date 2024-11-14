@@ -24,7 +24,7 @@ function userGanharPontos(idUsuario, pontosGanhos) {
 // Função para gastar pontos
 function userGastarPontos(idUsuario, idCategoria, pontosNecessarios) {
     const usuario = db.users.findOne({ _id: idUsuario });
-    const categoria = db.categorias.findOne({ _id: idCategoria });
+    const categoria = db.categories.findOne({ _id: idCategoria });
     if (!usuario || !categoria) {
         print("Usuário ou categoria não encontrado");
         return;
@@ -38,23 +38,39 @@ function userGastarPontos(idUsuario, idCategoria, pontosNecessarios) {
         print("Pontos gastos com sucesso");
     }
 }
+userGastarPontos(ObjectId("6732b521ed38e04887379d31"), ObjectId("6732b521ed38e04887379d36"), 0);
 
-// Função para adicionar pontos à categoria
+
 function categoriaGanharPontos(idCategoria, pontosGanhos) {
-    if (!pontosGanhos || pontosGanhos <= 0) {
-        print("Pontos ganhos inválidos");
-        return;
-    }
-    const categoria = db.categorias.findOne({ _id: idCategoria });
-    if (categoria) {
-        const pontosAtuais = categoria.pontos?.valorTotal || 0;
-        const novosPontos = pontosAtuais + pontosGanhos;
-        db.categorias.updateOne({ _id: idCategoria }, { $set: { "pontos.valorTotal": novosPontos } });
-        print("Pontos adicionados com sucesso");
-    } else {
-        print("Categoria não encontrada");
-    }
+  if (!pontosGanhos || pontosGanhos <= 0) {
+      print("Pontos ganhos inválidos");
+      return;
+  }
+
+  // Verifica se o idCategoria está no formato ObjectId
+  if (typeof idCategoria === "string") {
+      idCategoria = ObjectId(idCategoria);
+  }
+
+  const categoria = db.categories.findOne({ _id: idCategoria });
+
+  if (categoria) {
+      const pontosAtuais = categoria.pontos && categoria.pontos.valorTotal ? categoria.pontos.valorTotal : 0;
+      const novosPontos = pontosAtuais + pontosGanhos;
+
+      db.categories.updateOne(
+          { _id: idCategoria },
+          { $set: { "pontos.valorTotal": novosPontos } }
+      );
+      
+      print("Pontos adicionados com sucesso");
+  } else {
+      print("Categoria não encontrada");
+  }
 }
+
+// Exemplo de uso
+categoriaGanharPontos("6732b521ed38e04887379d36", 100); //
 
 // Função para calcular desconto com pontos
 function ganhaDesconto(idProduto, idUsuario, quantidade) {

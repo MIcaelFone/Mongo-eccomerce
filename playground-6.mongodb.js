@@ -1,60 +1,31 @@
-//Use o comando abaixo para executar o arquivo
-function coordinatesUsuario(longitude, latitude,idusuario) {
-    db.users.updateOne(
-        {_id:ObjectId(idusuario)},
-        { $set: { location: { type: "Point", coordinates: [longitude, latitude] } } }
-    );
+use('ecommerce');
+function categoriaGanharPontos(idCategoria, pontosGanhos) {
+  if (!pontosGanhos || pontosGanhos <= 0) {
+      print("Pontos ganhos inválidos");
+      return;
+  }
+
+  // Verifica se o idCategoria está no formato ObjectId
+  if (typeof idCategoria === "string") {
+      idCategoria = ObjectId(idCategoria);
+  }
+
+  const categoria = db.categories.findOne({ _id: idCategoria });
+
+  if (categoria) {
+      const pontosAtuais = categoria.pontos && categoria.pontos.valorTotal ? categoria.pontos.valorTotal : 0;
+      const novosPontos = pontosAtuais + pontosGanhos;
+
+      db.categories.updateOne(
+          { _id: idCategoria },
+          { $set: { "pontos.valorTotal": novosPontos } }
+      );
+      
+      print("Pontos adicionados com sucesso");
+  } else {
+      print("Categoria não encontrada");
+  }
 }
-coordinatesUsuario(-46.633309, -23.55052,"6732b521ed38e04887379d31");
 
-console.log("Coordenadas de usuários inseridas com sucesso");
-//Criar índices 2dsphere
-db.users.createIndex({ location: "2dsphere" });
-db.products.createIndex({ location: "2dsphere" });
-console.log("Índices 2dsphere criados com sucesso");
-db.users.getIndexes();
-db.products.getIndexes();
-//Consulta de distancia    
-db.transactions.aggregate([
-    {
-      $lookup: {
-        from: "products",
-        localField: "idProduto",
-        foreignField: "_id",
-        as: "produto"
-      }
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "userId",
-        foreignField: "_id",
-        as: "usuario"
-      }
-    },
-    {
-      $addFields: {
-        distancia: {
-          $geoNear: {
-            $geometry: { type: "Point", coordinates: ["$usuario.location", "$produto.location"] },
-            spherical: true
-          }
-        }
-      }
-    },
-    { $group: { _id: null, distanciaMedia: { $avg: "$distancia" } } }
-]);
-console.log("Média de distância calculada com sucesso");
-// Buscar Produtos por Proximidade Geográfica:
-db.products.find({
-    location: {
-      $near: {
-        $geometry: { type: "Point", coordinates: [userLongitude, userLatitude] },
-        $maxDistance: raioEmMetros
-      }
-    }
-});
-console.log("Produtos encontrados com sucesso");
-  
-
- 
+// Exemplo de uso
+categoriaGanharPontos("6732b521ed38e04887379d36", 100); // Adiciona 100 pontos à categoria com o ID fornecido
